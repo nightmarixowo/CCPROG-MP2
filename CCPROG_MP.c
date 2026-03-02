@@ -2,6 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 
+typedef struct {
+	int i;
+	float j;
+}letters;
+
+
 int main()
 {
 
