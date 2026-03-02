@@ -2,7 +2,70 @@
 #include <stdio.h>
 #include <string.h>
 
+/* DATA STRUCTURES*/
+typedef struct
+{
+	char username[31];
+ 	char password[31];
+} User;
+
+typedef struct 
+{
+	char username[31];
+	char house[31];
+	double monthlyBill;
+	double monthlykWh;
+	double roofsize;
+	
+
+}Records;
+
+
 /* FUNCTION DECLRATIONS */
+
+void encryptPassword(char password[]) //simple xor encryption
+{
+	int key = 5;
+	
+	for(int i=0; i<strlen(password); i++)
+	{
+		password[i] = password[i] ^ key;
+	}
+}
+
+int registerUser()
+{
+	FILE *fp;
+	User u;
+	User temp;
+	
+	int found = 0; //variable to see if the username already exists . this avoids duplicates
+	
+	printf("+---------------------------------+\n");
+	printf("| USER RESGISTRATION              |\n");
+	printf("+---------------------------------+\n");
+	printf("+=================================+\n");
+	printf("|ENTER USERNAME                   |\n");
+	printf("+=================================+\n");
+	printf("-> ");
+	scanf("%s", u.username);
+	printf("+=================================+\n");
+	printf("|ENTER PASSWORD                   |\n");
+	printf("+=================================+\n");
+	printf("-> ");
+	scanf("%s", u.password);
+	
+	fp = fopen("users.txt","a");
+	
+	
+	
+}
+
+
+//void loginUI()
+//{
+//	
+//}
 
 
 int main()
