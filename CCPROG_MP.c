@@ -33,40 +33,59 @@ void encryptPassword(char password[]) //simple xor encryption
 	}
 }
 
-int registerUser()
+int registerUser() //this function still errors on my end, need to debug
 {
 	FILE *fp;
 	User u;
-	User temp;
-	
-	int found = 0; //variable to see if the username already exists . this avoids duplicates
+	User temp; //variables to read the file
+	int found; //variable to see if the username already exists . this avoids duplicates
+	int result = 1;
 	
 	printf("+---------------------------------+\n");
 	printf("| USER RESGISTRATION              |\n");
 	printf("+---------------------------------+\n");
-	printf("+=================================+\n");
-	printf("|ENTER USERNAME                   |\n");
-	printf("+=================================+\n");
+
+
+	do
+	{
+		found = 0;
+		printf("--- ENTER USERNAME ---\n");
+		printf("-> ");
+		scanf("%30s", u.username);
+		
+		fp = fopen("users.txt","r"); // text file for the list of usernames and encrypted passwords / read & append
+		
+		if(fp!=NULL)
+		{
+			while(fscanf(fp, "%s %s", temp.username, temp.password) == 2)
+			{
+				if(strcmp(temp.username, u.username)==0)
+				{	
+					printf("--- This username is taken --- \n");
+					found = 1; //loops so user can enter a new username
+				}
+			}
+			fclose(fp);
+		}
+		else
+		{
+			found = 0;
+		}
+		
+	} while(found==1);
+	
+	printf("--- ENTER PASSWORD ---\n");
 	printf("-> ");
-	scanf("%s", u.username);
-	printf("+=================================+\n");
-	printf("|ENTER PASSWORD                   |\n");
-	printf("+=================================+\n");
-	printf("-> ");
-	scanf("%s", u.password);
+	scanf(" %30s", u.password);
+	encryptPassword(u.password); //call encryption function
 	
-	fp = fopen("users.txt","a");
+	fp = fopen("users.txt", "a");
+	fprintf(fp,"%s %s\n", u.username, u.password);
+	fclose(fp);
 	
-	
+	return result;
 	
 }
-
-
-//void loginUI()
-//{
-//	
-//}
-
 
 int main()
 {
@@ -97,7 +116,8 @@ int main()
 			{
 			case 1: printf("LOGIN FUNCTION NOT YET INPUTED\n"); //LOGIN FUNCTION - NOT CREATED YET
 			break;
-			case 2: printf("REGISTER FUNCTION NOT YET INPUTED\n"); //REGISTER FUNCTION - NOT CREATED YET
+			case 2: registerUser(); //REGISTER FUNCTION - NOT CREATED YET
+			loginStatus = 1;
 			break;
 			case 3: printf("PASSWORD RECOVERY FUNCTION NOT YET INPUTED\n"); //PW RECOVERY FUNCTION - NOT CREATED YET
 			break;
