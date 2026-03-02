@@ -5,7 +5,8 @@
 int main()
 {
 
-    printf("ccprrog mp project let's go");
+    printf("thank you amanda\n");
+    printf("ccprrog mp project let's go\n");
 
 return 0;
 }
