@@ -46,8 +46,6 @@ int registerUser() //this function still errors on my end, need to debug
 	printf("+---------------------------------+\n");
 
 
-	do
-	{
 		found = 0;
 		printf("--- ENTER USERNAME ---\n");
 		printf("-> ");
@@ -72,16 +70,24 @@ int registerUser() //this function still errors on my end, need to debug
 			found = 0;
 		}
 		
-	} while(found==1);
 	
-	printf("--- ENTER PASSWORD ---\n");
-	printf("-> ");
-	scanf(" %30s", u.password);
-	encryptPassword(u.password); //call encryption function
+	if(found==1)
+	{
+		result=0;
+	}
 	
-	fp = fopen("users.txt", "a");
-	fprintf(fp,"%s %s\n", u.username, u.password);
-	fclose(fp);
+	else
+	{
+		printf("--- ENTER PASSWORD ---\n");
+		printf("-> ");
+		scanf(" %30s", u.password);
+		encryptPassword(u.password); //call encryption function
+		
+		fp = fopen("users.txt", "a");
+		fprintf(fp,"%s %s\n", u.username, u.password);
+		fclose(fp);
+		
+	}
 	
 	return result;
 	
@@ -91,7 +97,8 @@ int main()
 {
 
 	int loginSelect;
-	int loginStatus = 1;
+	int loginStatus;
+	int status;
 	
 	//LOGIN UI SCREEN
 	printf("+---------------------------------+\n");
@@ -109,15 +116,18 @@ int main()
 	while(loginStatus)
 	{
 
-		printf("-> ");
 		scanf("%d", &loginSelect);
 
 		switch(loginSelect)
 			{
 			case 1: printf("LOGIN FUNCTION NOT YET INPUTED\n"); //LOGIN FUNCTION - NOT CREATED YET
 			break;
-			case 2: registerUser(); //REGISTER FUNCTION - NOT CREATED YET
-			loginStatus = 1;
+			case 2:	status = registerUser();
+					if(status==1)
+					{
+						printf("REGISTRATION SUCESSFUL!");
+					}
+			
 			break;
 			case 3: printf("PASSWORD RECOVERY FUNCTION NOT YET INPUTED\n"); //PW RECOVERY FUNCTION - NOT CREATED YET
 			break;
