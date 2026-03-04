@@ -61,9 +61,9 @@ int registerUser() //this function still errors on my end, need to debug
 				{	
 					printf("--- This username is already taken --- \n");//output for username
 					found = 1;
-			}	
-			fclose(fp);
+				}	
 			}
+			fclose(fp);
 		}
 		else
 		{
@@ -82,7 +82,7 @@ int registerUser() //this function still errors on my end, need to debug
 		encryptPassword(u.password); //call encryption function
 		
 		fp = fopen("users.txt", "a");
-		fprintf(fp,"%s %s\n", u.username, u.password);
+		fprintf(fp,"%s %s\n", u.username, u.password); //prints the registered username and encrypted password in the text file
 		fclose(fp);
 		
 	}
@@ -91,14 +91,86 @@ int registerUser() //this function still errors on my end, need to debug
 	             
 }
 
+int loginUser(char currentUser[])
+{
+	/* Logic used is almost the same as the registration function with some differences */
+	FILE *fp;
+	User u;
+	User stored;
+	int found;
+	int result = 0;
+	int attempts=3;
+
+	
+	printf("+---------------------------------+\n");
+	printf("| USER LOGIN                      |\n");
+	printf("+---------------------------------+\n");
+
+	found = 0;
+	printf("--- ENTER USERNAME ---\n");
+	printf("-> ");
+	scanf("%30s", u.username);
+	
+	fp = fopen("users.txt", "r");
+	
+		if(fp!=NULL)//checks if the file exists
+		{
+			while((found == 0)&&(fscanf(fp, "%s %s", stored.username, stored.password) == 2))//loops through list of all usernames
+			{
+				if(strcmp(stored.username, u.username)==0)//checks to see if the username is registered
+				{	
+					found = 1;
+				}	
+			}
+			fclose(fp);
+		}
+		else
+		{
+			printf("--- Username does not exists ---\n");
+			found = 0; // if the username is not registered
+		}	
+	
+	if(found==1)
+	{
+		while((attempts > 0)&&(result == 0))//the loop ends if correct password or no more attempts
+		{
+			attempts--;
+			printf("--- ENTER PASSWORD ---\n");
+			printf("-> ");
+			scanf(" %30s", u.password);
+			encryptPassword(u.password);
+			
+			if(strcmp(u.password, stored.password)==0)
+			{
+				strcpy(currentUser, u.username);
+				result = 1;
+			}
+			else
+			{
+				if(attempts>0)
+				{
+					printf("--- Password Incorrect! %d attempts remaining ---\n", attempts);
+				}
+				else
+				{
+					printf("--- Too many failed attempts! Try Password Recovery ---\n");
+				}
+			}
+		}
+	}
+	
+	return result;
+}
+
 
 int main()
 {
 
 	int loginSelect;
 	int loginStatus = 1; //initialize for loop
-	int status;
-	char loggedinUser[31];
+	int Rstatus; //registser status
+	int Lstatus; //logged in status
+	char currentUser[31];
 	
 //LOGIN UI SCREEN
 //	printf("+---------------------------------+\n");
@@ -127,23 +199,32 @@ int main()
 	printf("| 0. EXIT PROGRAM                 |\n");		
 	printf("|                                 |\n");	
 	printf("+---------------------------------+\n");
-
+	printf("-> ");
 		scanf("%d", &loginSelect);
 
 		switch(loginSelect)
 			{
-			case 1: printf("LOGIN FUNCTION NOT YET INPUTED\n"); //LOGIN FUNCTION - NOT CREATED YET
-			break;
-			case 2:	status = registerUser();
-					if(status==1)
-					{
-						printf("--- REGISTRATION SUCESSFUL! ---\n"); //
+			case 1: Lstatus = loginUser(currentUser); //LOGIN FUNCTION - NOT CREATED YET
+					if(Lstatus==1)
+					{	
+						printf("+---------------------------------+\n");
+						printf("| LOGIN        SUCESSFUL!         |\n");
+						printf("+---------------------------------+\n");
 						printf("Press Enter to proceed...\n");
-						while(getchar() != '\n');
+					}			
+					while(getchar() != '\n');
 						{
 							getchar();
 							printf("insert user UI"); //then implement all the login functions
-						}
+						}			
+			break;
+			case 2:	Rstatus = registerUser();
+					if(Rstatus==1)
+					{	
+						printf("+---------------------------------+\n");
+						printf("| REGISTRATION SUCESSFUL!         |\n");
+						printf("+---------------------------------+\n");
+						printf("Press Enter to proceed...\n");
 					}
 			
 			break;
