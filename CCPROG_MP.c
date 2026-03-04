@@ -208,14 +208,14 @@ int main()
 					if(Lstatus==1)
 					{	
 						printf("+---------------------------------+\n");
-						printf("| LOGIN        SUCESSFUL!         |\n");
+						printf("| LOGIN SUCESSFUL!                |\n");
 						printf("+---------------------------------+\n");
 						printf("Press Enter to proceed...\n");
 					}			
 					while(getchar() != '\n');
 						{
 							getchar();
-							printf("insert user UI"); //then implement all the login functions
+							printf("insert user UI function\n"); //then implement all the login functions
 						}			
 			break;
 			case 2:	Rstatus = registerUser();
