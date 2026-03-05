@@ -162,8 +162,26 @@ int loginUser(char currentUser[])
 	return result;
 }
 
+void viewSummary()
+{
+    double consumption;
+    double systemSize;
+    double sunlightHours = 4.5;
+
+    printf("+-------------------------------+\n");
+    printf("| SOLAR SYSTEM SUMMARY          |\n");
+    printf("+-------------------------------+\n");
+
+    printf("Enter Monthly Energy Consumption (kWh): ");
+    scanf("%lf", &consumption);
+
+    systemSize = consumption / (sunlightHours * 30);
+
+    printf("Estimated Solar System Size: %.2f kW\n", systemSize);
+}
 
 void loggedinUI()
+
 {
 	int select;
 	int loggedin = 1;
