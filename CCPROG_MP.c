@@ -42,7 +42,7 @@ int registerUser() //this function still errors on my end, need to debug
 	int result = 1;
 	
 	printf("+---------------------------------+\n");
-	printf("| USER RESGISTRATION              |\n");
+	printf("| USER REGISTRATION              |\n");
 	printf("+---------------------------------+\n");
 
 
@@ -163,6 +163,49 @@ int loginUser(char currentUser[])
 }
 
 
+void loggedinUI()
+{
+	int select;
+	int loggedin = 1;
+	while(loggedin == 1)
+	{
+	printf("+---------------------------------+\n");
+	printf("| SOLAR ENERGY INFORMATION SYSTEM |\n");
+	printf("+---------------------------------+\n");
+	printf("|                                 |\n");
+	printf("| 1. ADD HOUSEHOLD                |\n");
+	printf("| 2. EDIT HOUSEHOLD RECORD        |\n");
+	printf("| 3. DELETE HOUSEHOLD RECORD      |\n");
+	printf("| 4. VIEW RECORDS                 |\n");
+	printf("| 5. VIEW SUMMARY                 |\n");
+	printf("|                                 |\n");
+	printf("| 0. LOGOUT                       |\n");		
+	printf("|                                 |\n");	
+	printf("+---------------------------------+\n");
+	printf ("-> ");
+	scanf("%d", &select);
+	
+		switch(select)
+		{
+			case 1: printf("function not added yet\n"); //addHousehold
+			break;
+			case 2: printf("function not added yet\n"); //editHousehold
+			break;
+			case 3: printf("function not added yet\n"); //deleteHousehold
+			break;
+			case 4: printf("function not added yet\n"); //viewRecords
+			break;
+			case 5: printf("function not added yet\n"); //viewSummary
+			break;
+			case 0: loggedin = 0;
+			break;	
+		}
+	}
+	
+	
+}
+
+
 int main()
 {
 
@@ -208,14 +251,14 @@ int main()
 					if(Lstatus==1)
 					{	
 						printf("+---------------------------------+\n");
-						printf("| LOGIN SUCESSFUL!                |\n");
+						printf("| LOGIN SUCCESSFUL!                |\n");
 						printf("+---------------------------------+\n");
 						printf("Press Enter to proceed...\n");
 					}			
 					while(getchar() != '\n');
 						{
 							getchar();
-							printf("insert user UI function\n"); //then implement all the login functions
+							loggedinUI(); //then implement all the login functions
 						}			
 			break;
 			case 2:	Rstatus = registerUser();
@@ -230,8 +273,9 @@ int main()
 			break;
 			case 3: printf("PASSWORD RECOVERY FUNCTION NOT YET INPUTED\n"); //PW RECOVERY FUNCTION - NOT CREATED YET
 			break;
-			case 0: printf("EXITING PROGRAM!\n");
+			case 0: printf("--- EXITING PROGRAM! ---\n");
 					loginStatus = 0; //EXIT PROGRAM
+			break;
 			default:
 				{
 			printf("INVALID SELECTION! PLEASE TRY AGAIN!\n"); //incase of wrong input
