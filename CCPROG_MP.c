@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
+/* CONSTANTS */
+#define KEY 5 // this key can be changed
+
 /* DATA STRUCTURES*/
 typedef struct
 {
@@ -25,7 +28,7 @@ typedef struct
 
 void encryptPassword(char password[]) //simple xor encryption
 {
-	int key = 5;
+	int key = KEY;
 	
 	for(int i=0; i<strlen(password); i++)
 	{
@@ -109,11 +112,11 @@ int loginUser(char currentUser[])
 	found = 0;
 	printf("--- ENTER USERNAME ---\n");
 	printf("-> ");
-	scanf("%30s", u.username);
+	scanf("%30s", u.username); //takes the username input
 	
 	fp = fopen("users.txt", "r");
 	
-		if(fp!=NULL)//checks if the file exists
+		if(fp != NULL)//checks if the file exists
 		{
 			while((found == 0)&&(fscanf(fp, "%s %s", stored.username, stored.password) == 2))//loops through list of all usernames
 			{
@@ -123,6 +126,10 @@ int loginUser(char currentUser[])
 				}	
 			}
 			fclose(fp);
+		}
+		else if(fp == NULL) // i added this late, but this makes it so it says if the file doesn't exists
+		{
+			printf("--- Files not Found ---\n"); // tested by using a different file name and works
 		}
 		else
 		{
@@ -134,7 +141,7 @@ int loginUser(char currentUser[])
 	{
 		while((attempts > 0)&&(result == 0))//the loop ends if correct password or no more attempts
 		{
-			attempts--;
+			attempts--; //removes an attempt from password
 			printf("--- ENTER PASSWORD ---\n");
 			printf("-> ");
 			scanf(" %30s", u.password);
@@ -149,11 +156,11 @@ int loginUser(char currentUser[])
 			{
 				if(attempts>0)
 				{
-					printf("--- Password Incorrect! %d attempts remaining ---\n", attempts);
+					printf("--- Password Incorrect! %d attempts remaining ---\n", attempts); // password attempt loops
 				}
 				else
 				{
-					printf("--- Too many failed attempts! Try Password Recovery ---\n");
+					printf("--- Too many failed attempts! Try Password Recovery ---\n"); // redirects back to main UI
 				}
 			}
 		}
@@ -162,8 +169,42 @@ int loginUser(char currentUser[])
 	return result;
 }
 
+void addHousehold(char currentUser[])
+{
+	FILE *fp;
+	Records r;
+	
+	printf("+---------------------------------+\n");
+	printf("| ADD HOUSEHOLD                   |\n");
+	printf("+---------------------------------+\n");
+	
+	fp = fopen("records.txt", "a"); //ask miss on this if we need if(fp==NULL)
+	
+	strcpy(r.username, currentUser); //makes the created record for this user only
+	
+	/* each line is self-explanatory, just takes user input for each factor and records it*/
+	printf("--- ENTER HOUSEHOLD NAME ---\n");
+	printf("-> ");
+	scanf("%30s", r.house);
+	
+	printf("--- ENTER MONTHLY ELECTRICITY BILL (₱) ---\n");
+	printf("-> ");
+	scanf("%lf", &r.monthlyBill);
+	
+	printf("--- ENTER MONTHLY ENERGY CONSUMPTION (kWh) ---\n");
+	printf("-> ");
+	scanf("%lf", &r.monthlykWh);
+	
+	printf("--- ENTER ROOF SIZE (m^2) ---\n");
+	printf("-> ");
+	scanf("%lf", &r.roofsize);
+	
+	fprintf(fp, "%s %s %.2lf %.2lf %.2lf", r.username, r.house, r.monthlyBill, r.monthlykWh, r.roofsize); //copies records to records.txt
+	fclose(fp);
 
-void loggedinUI()
+	             
+}
+void loggedinUI(char currentUser[])
 {
 	int select;
 	int loggedin = 1;
@@ -187,7 +228,7 @@ void loggedinUI()
 	
 		switch(select)
 		{
-			case 1: printf("function not added yet\n"); //addHousehold
+			case 1: addHousehold(currentUser); //addHousehold
 			break;
 			case 2: printf("function not added yet\n"); //editHousehold
 			break;
@@ -198,6 +239,9 @@ void loggedinUI()
 			case 5: printf("function not added yet\n"); //viewSummary
 			break;
 			case 0: loggedin = 0;
+						printf("+---------------------------------+\n");
+						printf("| LOGGING OUT!                    |\n");
+						printf("+---------------------------------+\n");
 			break;	
 		}
 	}
@@ -251,24 +295,28 @@ int main()
 					if(Lstatus==1)
 					{	
 						printf("+---------------------------------+\n");
-						printf("| LOGIN SUCCESSFUL!                |\n");
+						printf("| LOGIN SUCCESSFUL!               |\n");
 						printf("+---------------------------------+\n");
-						printf("Press Enter to proceed...\n");
-					}			
+					}
+					printf("Press Enter to proceed...\n");		
 					while(getchar() != '\n');
 						{
 							getchar();
-							loggedinUI(); //then implement all the login functions
+							loggedinUI(currentUser); //then implement all the login functions
 						}			
 			break;
 			case 2:	Rstatus = registerUser();
-					if(Rstatus==1)
+					if(Rstatus==1) //successful return
 					{	
 						printf("+---------------------------------+\n");
 						printf("| REGISTRATION SUCESSFUL!         |\n");
 						printf("+---------------------------------+\n");
-						printf("Press Enter to proceed...\n");
 					}
+					printf("Press Enter to proceed...\n");
+					while(getchar() != '\n');
+						{
+							getchar();
+						}
 			
 			break;
 			case 3: printf("PASSWORD RECOVERY FUNCTION NOT YET INPUTED\n"); //PW RECOVERY FUNCTION - NOT CREATED YET
