@@ -201,9 +201,19 @@ void addHousehold(char currentUser[])
 	
 	fprintf(fp, "%s %s %.2lf %.2lf %.2lf", r.username, r.house, r.monthlyBill, r.monthlykWh, r.roofsize); //copies records to records.txt
 	fclose(fp);
-
 	             
 }
+
+void editHousehold(char currentUser[])
+{
+	FILE *fp;
+	Records r;
+	
+	
+	
+}
+
+
 void loggedinUI(char currentUser[])
 {
 	int select;
@@ -245,7 +255,6 @@ void loggedinUI(char currentUser[])
 			break;	
 		}
 	}
-	
 	
 }
 
