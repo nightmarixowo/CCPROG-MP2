@@ -180,6 +180,38 @@ void viewSummary()
     printf("Estimated Solar System Size: %.2f kW\n", systemSize);
 }
 
+void viewRecords()
+{
+    FILE *fp;
+    Records r;
+
+    printf("+-------------------------------+\n");
+    printf("| HOUSEHOLD RECORDS             |\n");
+    printf("+-------------------------------+\n");
+
+    fp = fopen("records.txt", "r");
+
+    if(fp == NULL)
+    {
+        printf("No records found.\n");
+        return;
+    }
+
+    while(fscanf(fp, "%s %s %lf %lf %lf",
+        r.username, r.house,
+        &r.monthlyBill,
+        &r.monthlykWh,
+        &r.roofsize) == 5)
+    {
+        printf("\nHousehold: %s\n", r.house);
+        printf("Monthly Bill: %.2f\n", r.monthlyBill);
+        printf("Monthly kWh: %.2f\n", r.monthlykWh);
+        printf("Roof Size: %.2f\n", r.roofsize);
+    }
+
+    fclose(fp);
+}
+
 void loggedinUI()
 
 {
@@ -211,8 +243,8 @@ void loggedinUI()
 			break;
 			case 3: printf("function not added yet\n"); //deleteHousehold
 			break;
-			case 4: printf("function not added yet\n"); //viewRecords
-			break;
+			case 4: viewRecords();
+            break;
 			case 5: printf("function not added yet\n"); //viewSummary
 			break;
 			case 0: loggedin = 0;
