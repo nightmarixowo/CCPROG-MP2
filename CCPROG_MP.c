@@ -19,7 +19,6 @@ typedef struct
 	double monthlyBill;
 	double monthlykWh;
 	double roofsize;
-	
 
 }Records;
 
@@ -130,6 +129,7 @@ int loginUser(char currentUser[])
 		else if(fp == NULL) // i added this late, but this makes it so it says if the file doesn't exists
 		{
 			printf("--- Files not Found ---\n"); // tested by using a different file name and works
+			result = 0;
 		}
 		else
 		{
@@ -187,7 +187,7 @@ void addHousehold(char currentUser[])
 	printf("-> ");
 	scanf("%30s", r.house);
 	
-	printf("--- ENTER MONTHLY ELECTRICITY BILL (₱) ---\n");
+	printf("--- ENTER MONTHLY ELECTRICITY BILL () ---\n");
 	printf("-> ");
 	scanf("%lf", &r.monthlyBill);
 	
@@ -211,6 +211,38 @@ void editHousehold(char currentUser[])
 	
 	
 	
+}
+
+void viewRecords(char currentUser[])
+{
+	FILE *fp;
+    Records r;
+
+    printf("+-------------------------------+\n");
+    printf("| HOUSEHOLD RECORDS             |\n");
+    printf("+-------------------------------+\n");
+
+    fp = fopen("records.txt", "r");
+
+    if(fp == NULL)
+    {
+        printf("No records found.\n");
+        return;
+    }
+
+    while(fscanf(fp, "%s %s %lf %lf %lf",
+        r.username, r.house,
+        &r.monthlyBill,
+        &r.monthlykWh,
+        &r.roofsize) == 5)
+    {
+        printf("\nHousehold: %s\n", r.house);
+        printf("Monthly Bill: %.2f\n", r.monthlyBill);
+        printf("Monthly kWh: %.2f\n", r.monthlykWh);
+        printf("Roof Size: %.2f\n", r.roofsize);
+    }
+
+    fclose(fp);
 }
 
 
@@ -244,7 +276,7 @@ void loggedinUI(char currentUser[])
 			break;
 			case 3: printf("function not added yet\n"); //deleteHousehold
 			break;
-			case 4: printf("function not added yet\n"); //viewRecords
+			case 4: viewRecords(currentUser); //viewRecords
 			break;
 			case 5: printf("function not added yet\n"); //viewSummary
 			break;
