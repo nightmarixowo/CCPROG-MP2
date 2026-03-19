@@ -1,37 +1,35 @@
-// MANGAHAS && CARTAGO - CCPROG2 MP - SOLAR ENERGY INFORMATION SYSTEM!
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-/* CONSTANTS */
-#define KEY 5 // this key can be changed
+#define KEY 5 //encryption decryption key - do not change this or all encryptions will be ruined
+#define MAX_STR 31 //max string length
+#define MAX_USER 100 //max recorded users
+#define MAX_HH 5 //max household
 
-/* DATA STRUCTURES*/
-typedef struct
-{
-	char username[31];
- 	char password[31];
+typedef char String[MAX_STR];
+
+typedef struct {
+    String username;
+    String password;
 } User;
 
-typedef struct 
-{
-	char username[31];
-	char house[31];
-	double monthlyBill;
-	double monthlykWh;
-	double roofsize;
-
-}Records;
+typedef struct {
+    String house;
+    double monthlyBill;
+    double monthlykWh;
+    double roofsize;
+} Records;
 
 
 /* FUNCTION DECLRATIONS */
 
 
-void encryptPassword(char password[]) //simple xor encryption
+void encryptPassword(String password) //simple xor encryption
 {
 	int key = KEY;
-	
-	for(int i=0; i<strlen(password); i++)
+	int n = strlen(password);
+	for(int i=0; i<n; i++)
 	{
 		password[i] = password[i] ^ key;
 	}
@@ -61,7 +59,7 @@ int registerUser() //this function still errors on my end, need to debug
 	int result = 1;
 	
 	printf("+---------------------------------+\n");
-	printf("| USER REGISTRATION              |\n");
+	printf("| USER REGISTRATION               |\n");
 	printf("+---------------------------------+\n");
 
 
@@ -331,7 +329,8 @@ int main()
 	int loginStatus = 1; //initialize for loop
 	int Rstatus; //registser status
 	int Lstatus; //logged in status
-	char currentUser[31];
+	
+	
 	
 //LOGIN UI SCREEN
 //	printf("+---------------------------------+\n");
