@@ -1,4 +1,4 @@
-// MANGAHAS && CARTAGO - CCPROG2 MP - SOLAR ENERGY INFORMATION SYSTEM!
+	// MANGAHAS && CARTAGO - CCPROG2 MP - SOLAR ENERGY INFORMATION SYSTEM!
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -61,7 +61,7 @@ int registerUser() //this function still errors on my end, need to debug
 	int result = 1;
 	
 	printf("+---------------------------------+\n");
-	printf("| USER REGISTRATION              |\n");
+	printf("| USER REGISTRATION               |\n");
 	printf("+---------------------------------+\n");
 
 

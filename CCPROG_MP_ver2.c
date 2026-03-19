@@ -41,11 +41,15 @@ void encryptPassword(String password) //done
 /* pause and clear screen - i didn't want to type it in everytime */
 void pauseScreen() //done
 {
+	
+	printf("--- PRESS ENTER TO PROCEED ---");
 	while(getchar() != '\n')
 	{}
 	getchar();
 	
-	system("cls"); //clears screen - this is for windows only, search for ways to 
+	// system("cls"); //clears screen - this is for windows only, search for ways to 
+	
+	printf("\n==========================================\n\n"); //border to separate
 }
 
 /* search username function - linear search*/
@@ -196,18 +200,142 @@ void saveHouseholds(User users[], int userCount, Record households[][MAX_HH], in
 
 /* DATA FUNCTIONS - LOGIN SCREEN */
 
-int registerUser()
+int registerUser(User users[], int * userCount)
 {
+	User u;
+	int result = 1; //flag
+	
+	printf("+---------------------------------+\n");
+	printf("| USER REGISTRATION               |\n");
+	printf("+---------------------------------+\n");
+	printf("--- ENTER USERNAME ---\n");
+	printf("-> ");
+	scanf("%30s", u.username);
+	
+	for(int i = 0; i < *userCount; i++) //loop that checks for duplicates
+	{
+		if(strcmp(u.username, users[i].username)==0)
+		{
+			result = 0;
+		}
+	}
+	
+	if(result == 0)
+	{
+		printf("--- THIS USERNAME ALREADY EXISTS ---\n");
+	}
+	else
+	{
+		printf("--- ENTER PASSWORD ---\n");
+		printf("-> ");
+		scanf(" %30s", u.password);
+		encryptPassword(u.password); //call encryption function
+		
+		users[*userCount] = u;
+		(*userCount)++;
+		sortUsers(users, *userCount); //sorts it to keep it organized
+		
+	}
+	
+	if(result == 1)
+	{
+		printf("+---------------------------------+\n");
+		printf("| REGISTRATION SUCESSFUL          |\n");
+		printf("+---------------------------------+\n");
+		
+		saveUsers(users, *userCount);
+	}
+	
+	return result;
 	
 }
 
-int loginUser()
+int loginUser(User users[], int userCount, String currentUser)
 {
+	User u; //for user input (username & password)
+	int result = 0; //returns 1 on success
+	int attempts = 3;
 	
+	printf("+---------------------------------+\n");
+	printf("| USER LOGIN                      |\n");
+	printf("+---------------------------------+\n");
+	printf("--- ENTER USERNAME ---\n");
+	printf("-> ");
+	scanf("%30s", u.username); //takes the username input
+	
+	int index = searchUser(users, userCount, u.username);
+	if(index == -1)
+	{
+		printf("--- USERNAME NOT FOUND ---\n");
+	}
+	else
+	{
+		while((attempts > 0)&&(result == 0))
+		{
+			printf("--- ENTER PASSWORD ---\n");
+			printf("-> ");
+			scanf("%30s", u.password);
+			encryptPassword(u.password); //call encryption function
+			
+			if(strcmp(u.password, users[index].password) == 0)
+			{
+				strcpy(currentUser, users[index].username); //"logs-in" the user
+				result = 1;
+			}
+			else
+			{
+				attempts--; //user gets 3 attempts
+				printf("--- INCORRECT PASSWORD! %d ATTEMPTS REMAINING ---\n", attempts);
+			}
+			if(attempts == 0)
+			{
+				printf("--- TOO MANY FAILED ATTEMPTS! TRY PASSWORD RECOVERY ---\n");
+			}
+		}
+		
+	}
+	
+	if(result == 1)
+	{
+		printf("+---------------------------------+\n");
+		printf("| LOGIN SUCESSFUL!                |\n");
+		printf("+---------------------------------+\n");
+	}
+	
+	return result;	
 }
 
-void passwordRecovery()
+void passwordRecovery(User users[], int userCount)
 {
+	
+	User u;
+	
+	printf("+---------------------------------+\n");
+	printf("| USER LOGIN                      |\n");
+	printf("+---------------------------------+\n");
+	printf("--- ENTER USERNAME ---\n");
+	printf("-> ");
+	scanf("%30s", u.username); //takes the username input
+	
+	int index = searchUser(users, userCount, u.username);
+	if(index == -1)
+	{
+		printf("--- USERNAME NOT FOUND ---\n");
+	}
+	else
+	{
+		printf("--- ENTER NEW PASSWORD ---\n");
+		printf("-> ");
+		scanf("%30s", u.password);
+		encryptPassword(u.password); //call encryption function
+		
+		strcpy(users[index].password, u.password);
+		printf("+---------------------------------+\n");
+		printf("| PASSWORD SUCESSFUL CHANGED!     |\n");
+		printf("+---------------------------------+\n");
+	}
+	
+	
 	
 }
 
@@ -241,6 +369,53 @@ void viewSummary()
 
 void loggedinUI()
 {
+
+	int select;
+	int loggedin = 1;
+	do
+	{
+	printf("+---------------------------------+\n");
+	printf("| SOLAR ENERGY INFORMATION SYSTEM |\n");
+	printf("+---------------------------------+\n");
+	printf("|                                 |\n");
+	printf("| 1. ADD HOUSEHOLD                |\n");
+	printf("| 2. EDIT HOUSEHOLD RECORD        |\n");
+	printf("| 3. DELETE HOUSEHOLD RECORD      |\n");
+	printf("| 4. VIEW RECORDS                 |\n");
+	printf("| 5. VIEW SUMMARY                 |\n");
+	printf("|                                 |\n");
+	printf("| 0. LOGOUT                       |\n");		
+	printf("|                                 |\n");	
+	printf("+---------------------------------+\n");
+	printf ("-> ");
+	scanf("%d", &select);
+	
+		switch(select)
+		{
+			case 1: //addHousehold(currentUser); //addHousehold
+					pauseScreen();
+			break;
+			case 2: //printf("function not added yet\n"); //editHousehold
+			break;
+			case 3: //printf("function not added yet\n"); //deleteHousehold
+			break;
+			case 4: //viewRecords(currentUser); //viewRecords
+					pauseScreen();
+			break;
+			case 5: printf("function not added yet\n"); //viewSummary
+			break;
+			case 0: 
+						printf("+---------------------------------+\n");
+						printf("| LOGGING OUT!                    |\n");
+						printf("+---------------------------------+\n");
+						pauseScreen();
+			break;	
+			default: printf("--- INVALID SELECTION! PLEASE TRY AGAIN! ---\n");
+					pauseScreen();
+			break;
+		}
+	}
+	while(select != 0);
 	
 }
 
@@ -266,7 +441,7 @@ int main()
 		printf("|                                 |\n");
 		printf("| 1. LOGIN                        |\n");
 		printf("| 2. REGISTER                     |\n");
-		printf("| 3. ACCOUNT RECOVERY             |\n");
+		printf("| 3. PASSWORD RECOVERY            |\n");
 		printf("|                                 |\n");
 		printf("| 0. EXIT PROGRAM                 |\n");		
 		printf("|                                 |\n");	
@@ -279,39 +454,47 @@ int main()
 			
 			case 1: //user login
 			{
-				
+				loginUser(users, userCount, currentUser);
+				pauseScreen();
 			}
 			break;
 			
 			case 2: //user registration
 			{
-				
+				registerUser(users, &userCount);
+				pauseScreen();
 			}	
 			break;
 			
 			case 3: //password recovery
 			{
-				
+				passwordRecovery(users, userCount);
+				pauseScreen();
 			}
 			break;
 			
 			case 0: //exit program
 			{
+				/* saves all file changes just incase */
+				saveHouseholds(users, userCount, households, householdCount);
+				saveUsers(users, userCount);
 				
+				printf("+---------------------------------+\n");
+				printf("| EXITING PROGRAM!                |\n");
+				printf("+---------------------------------+\n");
 			}
 			break;
 			
 			default: //invalid integer input
 			{
-				
+				printf("--- INVALID SELECTION! PLEASE TRY AGAIN! ---\n");
+				pauseScreen();
 			}
 			break;
 		}
 	}
-	while(loginSelect != 0);
-	
-	
-	
+	while(loginSelect != 0); //runs until logout
+
 	
 	return 0;
 }
