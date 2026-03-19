@@ -1,7 +1,6 @@
 // MANGAHAS && CARTAGO - CCPROG2 MP - SOLAR ENERGY INFORMATION SYSTEM!
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
 #define KEY 5 //encryption decryption key - do not change this or all encryptions will be ruined
 #define MAX_STR 31 //max string length
@@ -17,6 +16,7 @@ typedef struct {
 } User;
 
 typedef struct {
+	User loggedInUser;
     String house;
     double monthlyBill;
     double monthlykWh;
@@ -42,7 +42,7 @@ void encryptPassword(String password) //done
 void pauseScreen() //done
 {
 	
-	printf("--- PRESS ENTER TO PROCEED ---");
+	printf("\n--- PRESS ENTER TO PROCEED ---\n");
 	while(getchar() != '\n')
 	{}
 	getchar();
@@ -123,13 +123,13 @@ int loadUsers(User users[]) //done
 	FILE *fp;
 	fp = fopen("users.txt", "r");
 	
-	if(fp == NULL)
+	if(fp == NULL) //checks if files exists or not
 	{
 		printf("--- FILES NOT FOUND ---\n");
 	}
 	else
 	{
-		while(fscanf(fp, "%30s %30s", users[count].username, users[count].password) == 2)
+		while(fscanf(fp, "%30s %30s", users[count].username, users[count].password) == 2) //user counter
 		{
 			count++;
 		}
@@ -192,7 +192,7 @@ void saveHouseholds(User users[], int userCount, Record households[][MAX_HH], in
 	{
 		for(int j = 0; j < householdCount[i]; j++)
 		{
-			fprintf(fp, "%30s %30s %.2lf %.2lf %.2lf\n", users[i].username, households[i][j].house, households[i][j].monthlyBill, households[i][j].monthlykWh, households[i][j].roofsize);
+			fprintf(fp, "%s %s %.2lf %.2lf %.2lf\n", users[i].username, households[i][j].house, households[i][j].monthlyBill, households[i][j].monthlykWh, households[i][j].roofsize);
 			// username, house name, electricty bill, power kWh, roof
 		}
 	}
@@ -341,8 +341,47 @@ void passwordRecovery(User users[], int userCount)
 
 /* DATA FUNCTIONS AND COMPUTATIONS - HOME PAGE */
 
-void addHousehold()
+void addHousehold(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
+	
+	Record r;
+	int userIndex = searchUser(users, userCount, currentUser);
+	
+	if(householdCount[userIndex] >= MAX_HH)
+	{
+		printf("--- MAX HOUSEHOLD LIMIT REACHED ---");
+	}
+	else
+	{
+		printf("+---------------------------------+\n");
+		printf("| ADD HOUSEHOLD                   |\n");
+		printf("+---------------------------------+\n");
+		
+		strcpy(r.loggedInUser.username, currentUser); //copies logged in user for file
+		
+		/* each line is self-explanatory, just takes user input for each factor and records it*/
+		printf("--- ENTER HOUSEHOLD NAME ---\n");
+		printf("-> ");
+		scanf("%30s", r.house);
+		
+		printf("--- ENTER MONTHLY ELECTRICITY BILL (Pesos) ---\n");
+		printf("-> ");
+		scanf("%lf", &r.monthlyBill);
+		
+		printf("--- ENTER MONTHLY ENERGY CONSUMPTION (kWh) ---\n");
+		printf("-> ");
+		scanf("%lf", &r.monthlykWh);
+		
+		printf("--- ENTER ROOF SIZE (m^2) ---\n");
+		printf("-> ");
+		scanf("%lf", &r.roofsize);
+		
+		households[userIndex][householdCount[userIndex]] = r;
+		householdCount[userIndex]++; 
+	
+		sortHouseholds(households, householdCount, userIndex);
+		saveHouseholds(users, userCount, households, householdCount);
+	}
 	
 }
 
@@ -356,9 +395,33 @@ void deleteHousehold()
 	
 }
 
-void viewRecords()
+void viewRecords(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
+	Record r;
+	printf("+---------------------------------+\n");
+	printf("| HOUSEHOLDS                      |\n");
+	printf("+---------------------------------+\n");
 	
+	int userIndex = searchUser(users, userCount, currentUser); //
+//	int userIndex = 2; it works
+	
+	if(householdCount == 0)
+	{
+		printf("--- NO RECORDS FOUND ---");
+	}
+	else
+	{
+		printf("<--------------------------------->\n");
+		
+		for(int i = 0; i < householdCount[userIndex]; i++)
+		{
+		    printf("Household Name: %s\n", households[userIndex][i].house);
+		    printf("Monthly Bill: %.2f\n", households[userIndex][i].monthlyBill);
+		    printf("Monthly kWh: %.2f\n", households[userIndex][i].monthlykWh);
+		    printf("Roof Size: %.2f\n", households[userIndex][i].roofsize);
+		    printf("<--------------------------------->\n");
+		}
+	}
 }
 
 /* computes and shows summary of households */
@@ -367,7 +430,7 @@ void viewSummary()
 	
 }
 
-void loggedinUI()
+void loggedinUI(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
 
 	int select;
@@ -392,26 +455,49 @@ void loggedinUI()
 	
 		switch(select)
 		{
-			case 1: //addHousehold(currentUser); //addHousehold
-					pauseScreen();
+			case 1: 
+			{
+				addHousehold(users, userCount, households, householdCount, currentUser); //addHousehold
+				pauseScreen();
+			}
 			break;
-			case 2: //printf("function not added yet\n"); //editHousehold
+			case 2:
+			{
+			 	//editHousehold(currentUser);
+			 	pauseScreen();
+			}
 			break;
-			case 3: //printf("function not added yet\n"); //deleteHousehold
+			case 3: 
+			{
+				//deleteHousehold(currentUSer);
+				pauseScreen();
+			}
 			break;
-			case 4: //viewRecords(currentUser); //viewRecords
-					pauseScreen();
+			case 4:
+			{
+				//viewRecords(currentUser);
+				pauseScreen();
+			}
 			break;
-			case 5: printf("function not added yet\n"); //viewSummary
+			case 5: 
+			{
+				//viewSummary
+				pauseScreen();
+			}
 			break;
 			case 0: 
-						printf("+---------------------------------+\n");
-						printf("| LOGGING OUT!                    |\n");
-						printf("+---------------------------------+\n");
-						pauseScreen();
+			{
+				printf("+---------------------------------+\n");
+				printf("| LOGGING OUT!                    |\n");
+				printf("+---------------------------------+\n");
+				pauseScreen();
+			}
 			break;	
-			default: printf("--- INVALID SELECTION! PLEASE TRY AGAIN! ---\n");
-					pauseScreen();
+			default:
+			{
+				printf("--- INVALID SELECTION! PLEASE TRY AGAIN! ---\n");
+				pauseScreen();
+			}
 			break;
 		}
 	}
@@ -429,7 +515,7 @@ int main()
     String currentUser;
 	
 	int loginSelect;
-	int Rstatus, Lstatus;
+	int loginStatus;
 	
 	userCount = loadUsers(users);
 	
@@ -454,8 +540,13 @@ int main()
 			
 			case 1: //user login
 			{
-				loginUser(users, userCount, currentUser);
+				loginStatus = loginUser(users, userCount, currentUser);
 				pauseScreen();
+				
+				if(loginStatus == 1) //login sucessful, proceed to home page UI
+				{
+					loggedinUI(users, userCount, households, householdCount, currentUser);
+				}
 			}
 			break;
 			
