@@ -16,7 +16,8 @@ typedef struct {
 } User;
 
 typedef struct {
-	User loggedInUser;
+	
+	String user;
     String house;
     double monthlyBill;
     double monthlykWh;
@@ -57,12 +58,14 @@ int searchUser(User users[], int userCount, String currentUser) //done
 {
 	
 	int index = -1; //flag variable
+	int found = 0;
 	
 	for(int i=0; i<userCount; i++)
 	{
-		if(strcmp(users[i].username, currentUser) == 0)//checks array of usernames
+		if((strcmp(users[i].username, currentUser) == 0)&&(found == 0))//checks array of usernames
 		{
 			index = i;
+			found = 1;
 		}
 	}
 	return index; //returns index of found user, and -1 if unsuccessful
@@ -78,7 +81,7 @@ void sortUsers(User users[], int userCount) //done - i dont know if we need this
     	minIndex = i;
         for(j = i + 1; j < userCount; j++)
 		{
-            if(strcmp(users[i].username, users[minIndex].username) < 0)
+            if(strcmp(users[j].username, users[minIndex].username) < 0)
 			{
                 minIndex = j;
             }
@@ -100,7 +103,7 @@ void sortHouseholds(Record households[][MAX_HH], int householdCount[], int userI
     for(i=0; i < householdCount[userIndex] - 1; i++)
 	{
     	minIndex = i;
-        for(j = 0; j < householdCount[userIndex]; j++)
+        for(j = i+1; j < householdCount[userIndex]; j++)
 		{
             if(strcmp(households[userIndex][j].house, households[userIndex][minIndex].house) < 0)
 			{
@@ -150,6 +153,8 @@ void saveUsers(User users[], int userCount)
 		fprintf(fp, "%s %s\n", users[i].username, users[i].password);
 		// username password(encrypted)
 	}
+	
+	fclose(fp);
 }
 
 void loadHouseholds(User users[], int userCount, Record households[][MAX_HH], int householdCount[])
@@ -166,18 +171,19 @@ void loadHouseholds(User users[], int userCount, Record households[][MAX_HH], in
 	}
 	else
 	{
-		while(fscanf(fp, "%30s %30s %.2lf %.2lf %.2lf", username,  r.house, r.monthlyBill, r.monthlykWh, r.roofsize) == 5) //scans file
+		while(fscanf(fp, "%30s %30s %lf %lf %lf", username,  r.house, &r.monthlyBill, &r.monthlykWh, &r.roofsize )== 5) //scans file
 		{
 			int index = searchUser(users, userCount, username);
 			
 			if((index != -1)&&( householdCount[index] < MAX_HH)) // if the user exists and household has not exceeded the max
 			{
+				strcpy(r.user, username);
 				households[index][householdCount[index]] = r; //saves record data onto the array of structs
                 householdCount[index]++; //increments the householdCount of a user
 			}
 		}
+		
 	}
-	
 	fclose(fp);
 	
 }
@@ -187,15 +193,24 @@ void saveHouseholds(User users[], int userCount, Record households[][MAX_HH], in
 	FILE *fp;
 	fp = fopen("records.txt","w");
 	
-	//for loops that writes on the file
-	for(int i = 0; i < userCount; i++)
+	if(fp == NULL) //checks if files exists or not
 	{
-		for(int j = 0; j < householdCount[i]; j++)
+		printf("--- FILES NOT FOUND ---\n");
+	}
+	else
+	{	
+		//for loops that writes on the file
+		for(int i = 0; i < userCount; i++)
 		{
-			fprintf(fp, "%s %s %.2lf %.2lf %.2lf\n", users[i].username, households[i][j].house, households[i][j].monthlyBill, households[i][j].monthlykWh, households[i][j].roofsize);
-			// username, house name, electricty bill, power kWh, roof
+			for(int j = 0; j < householdCount[i]; j++)
+			{
+				fprintf(fp, "%s %s %.2lf %.2lf %.2lf\n", users[i].username, households[i][j].house, households[i][j].monthlyBill, households[i][j].monthlykWh, households[i][j].roofsize);
+				// username, house name, electricty bill, power kWh, roof
+			}
 		}
 	}
+	fclose(fp);
+	
 }
 
 /* DATA FUNCTIONS - LOGIN SCREEN */
@@ -240,7 +255,7 @@ int registerUser(User users[], int * userCount)
 	if(result == 1)
 	{
 		printf("+---------------------------------+\n");
-		printf("| REGISTRATION SUCESSFUL          |\n");
+		printf("| REGISTRATION SUCCESSFUL         |\n");
 		printf("+---------------------------------+\n");
 		
 		saveUsers(users, *userCount);
@@ -346,10 +361,15 @@ void addHousehold(User users[], int userCount, Record households[][MAX_HH], int 
 	
 	Record r;
 	int userIndex = searchUser(users, userCount, currentUser);
+	if(userIndex == -1)
+	{
+		printf("--- USERNAME NOT FOUND ---\n");
+	}
+	
 	
 	if(householdCount[userIndex] >= MAX_HH)
 	{
-		printf("--- MAX HOUSEHOLD LIMIT REACHED ---");
+		printf("--- MAX HOUSEHOLD LIMIT REACHED ---\n");
 	}
 	else
 	{
@@ -357,14 +377,14 @@ void addHousehold(User users[], int userCount, Record households[][MAX_HH], int 
 		printf("| ADD HOUSEHOLD                   |\n");
 		printf("+---------------------------------+\n");
 		
-		strcpy(r.loggedInUser.username, currentUser); //copies logged in user for file
+		strcpy(r.user, currentUser); //copies logged in user for file
 		
 		/* each line is self-explanatory, just takes user input for each factor and records it*/
 		printf("--- ENTER HOUSEHOLD NAME ---\n");
 		printf("-> ");
 		scanf("%30s", r.house);
 		
-		printf("--- ENTER MONTHLY ELECTRICITY BILL (Pesos) ---\n");
+		printf("--- ENTER MONTHLY ELECTRICITY BILL (PHP) ---\n");
 		printf("-> ");
 		scanf("%lf", &r.monthlyBill);
 		
@@ -385,14 +405,147 @@ void addHousehold(User users[], int userCount, Record households[][MAX_HH], int 
 	
 }
 
-void editHousehold()
+void editHousehold(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
 	
+	int select;
+	int userIndex = searchUser(users, userCount, currentUser);
+	if(userIndex == -1)
+	{
+		printf("--- USERNAME NOT FOUND ---\n");
+	}
+	
+	if(householdCount[userIndex] == 0)
+	{
+		printf("\n--- NO HOUSEHOLDS TO EDIT ---\n");
+	}
+	else	
+	{
+		printf("+---------------------------------+\n");
+		printf("| EDIT HOUSEHOLD                  |\n");
+		printf("+---------------------------------+\n");
+		printf("--- SELECT HOUSEHOLD TO EDIT ---\n");
+		
+		for(int i = 0; i < householdCount[userIndex]; i++)
+		{
+			printf("%d. %s\n", i+1, households[userIndex][i].house);
+		}
+		
+		printf("+---------------------------------+\n");
+		printf("-> ");
+		scanf("%d", &select);
+		select--; //to match the index
+		
+		if((select < 0)||(select >= householdCount[userIndex]))
+		{
+			printf("--- INVALID SELECTION ---\n");
+		}
+		else
+		{
+			Record *r = &households[userIndex][select];	
+			
+			printf("--- ENTER HOUSEHOLD NAME ---\n");
+			printf("-> ");
+			scanf("%30s", r->house);
+			
+			printf("--- ENTER MONTHLY ELECTRICITY BILL (PHP) ---\n");
+			printf("-> ");
+			scanf("%lf", &r->monthlyBill);
+			
+			printf("--- ENTER MONTHLY ENERGY CONSUMPTION (kWh) ---\n");
+			printf("-> ");
+			scanf("%lf", &r->monthlykWh);
+			
+			printf("--- ENTER ROOF SIZE (m^2) ---\n");
+			printf("-> ");
+			scanf("%lf", &r->roofsize);
+			
+		sortHouseholds(households, householdCount, userIndex);
+		saveHouseholds(users, userCount, households, householdCount);
+		
+		printf("+---------------------------------+\n");
+		printf("| HOUSEHOLD UPDATED!              |\n");
+		printf("+---------------------------------+\n");
+		
+		}		
+			
+	}
 }
 
-void deleteHousehold()
+void deleteHousehold(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
-	
+	int select;
+	int userIndex = searchUser(users, userCount, currentUser);
+	if(userIndex == -1)
+	{
+		printf("--- USERNAME NOT FOUND ---\n");
+	}
+		
+	if(householdCount[userIndex] == 0)
+	{
+		printf("\n--- NO HOUSEHOLDS TO DELETE ---\n");
+	}
+	else	
+	{
+		printf("+---------------------------------+\n");
+		printf("| DELETE HOUSEHOLD                  |\n");
+		printf("+---------------------------------+\n");
+		printf("--- SELECT HOUSEHOLD TO DELETE ---\n");
+		
+		for(int i = 0; i < householdCount[userIndex]; i++)
+		{
+			printf("%d. %s\n", i+1, households[userIndex][i].house);
+		}
+		
+		printf("+---------------------------------+\n");
+		printf("-> ");
+		scanf("%d", &select);
+		select--; //to match the index
+		
+		if((select < 0)||(select >= householdCount[userIndex]))
+		{
+			printf("--- INVALID SELECTION ---\n");
+		}
+		else
+		{
+			char confirm;
+			
+			printf("--- YOU ARE DELETING: %s ---\n", households[userIndex][select].house); //indicates which record is being deleted
+			printf("--- CONFIRM DELETE? ENTER (Y/N) ---\n"); //confirmation message
+			
+			do
+			{
+				printf("-> ");
+				scanf("%c", &confirm);
+				if((confirm == 'Y')||(confirm == 'y'))
+				{
+					
+					for(int j = select; j < householdCount[userIndex]-1; j++)
+					{
+						households[userIndex][j] = households[userIndex][j+1]; //shifts down the records, overriding the selected
+					}
+					householdCount[userIndex]--; //decrements the amount of existing users
+					
+					sortHouseholds(households, householdCount, userIndex);
+					saveHouseholds(users, userCount, households, householdCount);
+					printf("+---------------------------------+\n");
+					printf("| RECORD SUCCESSFULLY DELETED!    |\n");
+					printf("+---------------------------------+\n");
+				}
+				else if((confirm == 'N')||(confirm == 'n'))
+				{
+					printf("+---------------------------------+\n");
+					printf("| RECORD DELETION CANCELLED!      |\n");
+					printf("+---------------------------------+\n");	
+				}
+				else
+				{
+					printf("--- INVALID SELECTION ---");
+				}
+			}while((confirm!='Y')&&(confirm!='y')&&(confirm!='N')&&(confirm!='n')); //loops until the user confirms whether to delete or not
+		}		
+			
+	}	
 }
 
 void viewRecords(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
@@ -404,8 +557,12 @@ void viewRecords(User users[], int userCount, Record households[][MAX_HH], int h
 	
 	int userIndex = searchUser(users, userCount, currentUser); //
 //	int userIndex = 2; it works
+	if(userIndex == -1)
+	{
+		printf("--- USERNAME NOT FOUND ---\n");
+	}
 	
-	if(householdCount == 0)
+	if(householdCount[userIndex] == 0)
 	{
 		printf("--- NO RECORDS FOUND ---");
 	}
@@ -425,15 +582,115 @@ void viewRecords(User users[], int userCount, Record households[][MAX_HH], int h
 }
 
 /* computes and shows summary of households */
-void viewSummary()
+void viewSummary(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
 	
+	/* Average kWh/m^2 per month generated by each solar panel type */
+	float monoRate = 18; //monocrystalline
+	float polyRate = 15; //polycrystalline
+	float thinRate = 12; //thin-film
+	
+	int userIndex = searchUser(users, userCount, currentUser);
+	if(userIndex == -1)
+	{
+		printf("--- USERNAME NOT FOUND ---\n");
+	}
+	
+	printf("+---------------------------------+\n");
+	printf("| SUMMARY                         |\n");
+	printf("+---------------------------------+\n");
+	
+	if(householdCount[userIndex] == 0)
+	{
+		printf("--- NO RECORDS FOUND ---\n");
+	}
+	else
+	{
+		for(int i = 0; i < householdCount[userIndex]; i++)//loops through all households, for their summary
+		{
+		
+		printf("\n <<< HOUSEHOLD %d: %s\n", i+1, households[userIndex][i].house);
+		
+		/* Variables for the most optimal panel type */
+		String bestPanel;
+		strcpy(bestPanel, "");
+		double bestkwh = 0;
+		double bestSave = 0;
+		double coverageFactor = 0.4; //assuming that only 40% of the roof can be used for solar panels
+		double usableRoof = (households[userIndex][i].roofsize * coverageFactor);
+		double unitRate = (households[userIndex][i].monthlyBill / households[userIndex][i].monthlykWh);
+		
+		/* Estimated power generated based on roofsize */
+		double monokwh = usableRoof * monoRate;
+		double polykwh = usableRoof * polyRate;
+		double thinkwh = usableRoof * thinRate;
+		
+		/* kWh x cost of kwh */
+		double monoSave = monokwh * unitRate;
+		double polySave = polykwh * unitRate;
+		double thinSave = thinkwh * unitRate;
+		
+
+		if(usableRoof < 40) //small roofs
+		{
+			strcpy(bestPanel, "MONOCRYSTALLINE");
+			bestSave = monoSave;
+			bestkwh = monokwh;
+		}
+		else if((usableRoof >= 40)&&(usableRoof <= 70)) //medium roofs could be either mono or poly
+		{
+			if(polySave <= monoSave)
+			{
+				strcpy(bestPanel, "MONOCRYSTALLINE");
+				bestSave = monoSave;
+				bestkwh = monokwh;
+			}
+			else
+			{
+				strcpy(bestPanel, "POLYCRYSTALLINE");
+				bestSave = polySave;
+				bestkwh = polykwh;
+			}
+		}
+		else if((usableRoof >= 70)&&(usableRoof <= 100))
+		{
+			strcpy(bestPanel, "POLYCRYSTALLINE");
+			bestSave = polySave;
+			bestkwh = polykwh;
+		}
+		else if(usableRoof>= 100) //considered large roofsize
+		{
+			strcpy(bestPanel, "THIN-FILM");
+			bestSave = thinSave;
+			bestkwh = thinkwh;
+		}
+		
+		printf("RECCOMENDED PANEL TYPE : %s\n", bestPanel);
+		printf("ESTIMATED MONTHLY SAVINGS : %.2lf P\n", bestSave);
+		printf("ESTIMATED MONTHLY POWER GENERATED : %.2lf kWh\n", bestkwh);
+		
+		/* not sure if i should to include this in the final but just prints out everything*/
+		printf("---------------------------------------------------------------\n");
+		printf("| MONOCRYSTALLINE | SAVINGS: %.2lf PHP | POWER: %.2lf kWh |\n", monoSave, monokwh);
+		printf("---------------------------------------------------------------\n");
+		printf("| POLYCRYSTALLINE | SAVINGS: %.2lf PHP | POWER: %.2lf kWh |\n", polySave, polykwh);
+		printf("---------------------------------------------------------------\n");
+		printf("| THIN-FILM       | SAVINGS: %.2lf PHP | POWER: %.2lf kWh |\n", thinSave, thinkwh);
+		printf("---------------------------------------------------------------\n");
+
+		printf("\n<--------------------------------->\n");
+			
+		}
+	}		
 }
+	
+	
+
 
 void loggedinUI(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
 
-	int select;
+	int select = -1;
 	int loggedin = 1;
 	do
 	{
@@ -463,25 +720,25 @@ void loggedinUI(User users[], int userCount, Record households[][MAX_HH], int ho
 			break;
 			case 2:
 			{
-			 	//editHousehold(currentUser);
+			 	editHousehold(users, userCount, households, householdCount, currentUser);
 			 	pauseScreen();
 			}
 			break;
 			case 3: 
 			{
-				//deleteHousehold(currentUSer);
+				deleteHousehold(users, userCount, households, householdCount, currentUser);
 				pauseScreen();
 			}
 			break;
 			case 4:
 			{
-				//viewRecords(currentUser);
+				viewRecords(users, userCount, households, householdCount, currentUser);
 				pauseScreen();
 			}
 			break;
 			case 5: 
 			{
-				//viewSummary
+				viewSummary(users, userCount, households, householdCount, currentUser);
 				pauseScreen();
 			}
 			break;
@@ -518,6 +775,7 @@ int main()
 	int loginStatus;
 	
 	userCount = loadUsers(users);
+	loadHouseholds(users, userCount, households, householdCount);
 	
 	do
 	{

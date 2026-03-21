@@ -1,3 +1,2 @@
-user new 0.00 0.00 0.00
-user house 0.00 0.00 0.00
-user house 0.00 0.00 0.00
+testuser1 apple:) 100.00 90.00 40.00
+testuser1 hahah 0.00 0.00 0.00
