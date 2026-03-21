@@ -1,0 +1,2 @@
+user22 bahaynikuya 9000.00 200.00 80.00
+user22 warehouse 20000.00 450.00 220.00
