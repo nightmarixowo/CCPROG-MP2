@@ -690,7 +690,7 @@ void viewSummary(User users[], int userCount, Record households[][MAX_HH], int h
 void loggedinUI(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
 
-	int select = -1;
+	char select = -1;
 	int loggedin = 1;
 	do
 	{
@@ -708,41 +708,41 @@ void loggedinUI(User users[], int userCount, Record households[][MAX_HH], int ho
 	printf("|                                 |\n");	
 	printf("+---------------------------------+\n");
 	printf ("-> ");
-	scanf("%d", &select);
+	scanf("%c", &select);
 	
 		switch(select)
 		{
-			case 1: 
+			case '1': 
 			{
 				addHousehold(users, userCount, households, householdCount, currentUser); //addHousehold
 				pauseScreen();
 			}
 			break;
-			case 2:
+			case '2':
 			{
 			 	editHousehold(users, userCount, households, householdCount, currentUser);
 			 	pauseScreen();
 			}
 			break;
-			case 3: 
+			case '3': 
 			{
 				deleteHousehold(users, userCount, households, householdCount, currentUser);
 				pauseScreen();
 			}
 			break;
-			case 4:
+			case '4':
 			{
 				viewRecords(users, userCount, households, householdCount, currentUser);
 				pauseScreen();
 			}
 			break;
-			case 5: 
+			case '5': 
 			{
 				viewSummary(users, userCount, households, householdCount, currentUser);
 				pauseScreen();
 			}
 			break;
-			case 0: 
+			case '0': 
 			{
 				printf("+---------------------------------+\n");
 				printf("| LOGGING OUT!                    |\n");
@@ -758,7 +758,7 @@ void loggedinUI(User users[], int userCount, Record households[][MAX_HH], int ho
 			break;
 		}
 	}
-	while(select != 0);
+	while(select != '0');
 	
 }
 
@@ -771,7 +771,7 @@ int main()
     int userCount = 0;
     String currentUser;
 	
-	int loginSelect;
+	char loginSelect;
 	int loginStatus;
 	
 	userCount = loadUsers(users);
@@ -791,12 +791,12 @@ int main()
 		printf("|                                 |\n");	
 		printf("+---------------------------------+\n");
 		printf("-> ");
-		scanf("%d", &loginSelect);
+		scanf("%c", &loginSelect);
 
 		switch(loginSelect)
 		{
 			
-			case 1: //user login
+			case '1': //user login
 			{
 				loginStatus = loginUser(users, userCount, currentUser);
 				pauseScreen();
@@ -808,21 +808,21 @@ int main()
 			}
 			break;
 			
-			case 2: //user registration
+			case '2': //user registration
 			{
 				registerUser(users, &userCount);
 				pauseScreen();
 			}	
 			break;
 			
-			case 3: //password recovery
+			case '3': //password recovery
 			{
 				passwordRecovery(users, userCount);
 				pauseScreen();
 			}
 			break;
 			
-			case 0: //exit program
+			case '0': //exit program
 			{
 				/* saves all file changes just incase */
 				saveHouseholds(users, userCount, households, householdCount);
@@ -842,7 +842,7 @@ int main()
 			break;
 		}
 	}
-	while(loginSelect != 0); //runs until logout
+	while(loginSelect != '0'); //runs until logout
 
 	
 	return 0;
