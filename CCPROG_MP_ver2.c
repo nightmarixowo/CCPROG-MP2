@@ -50,7 +50,7 @@ void pauseScreen() //done
 	
 	// system("cls"); //clears screen - this is for windows only, search for ways to 
 	
-	printf("\n==========================================\n\n"); //border to separate
+	printf("\n=================================================\n\n"); //border to separate
 }
 
 /* search username function - linear search*/
