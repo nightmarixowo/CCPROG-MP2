@@ -747,19 +747,31 @@ void loggedinUI(User users[], int userCount, Record households[][MAX_HH], int ho
 	int loggedin = 1;
 	do
 	{
-	printf("+---------------------------------+\n");
-	printf("| SOLAR ENERGY INFORMATION SYSTEM |\n");
-	printf("+---------------------------------+\n");
-	printf("|                                 |\n");
-	printf("| 1. ADD HOUSEHOLD                |\n");
-	printf("| 2. EDIT HOUSEHOLD RECORD        |\n");
-	printf("| 3. DELETE HOUSEHOLD RECORD      |\n");
-	printf("| 4. VIEW RECORDS                 |\n");
-	printf("| 5. VIEW SUMMARY                 |\n");
-	printf("|                                 |\n");
-	printf("| 0. LOGOUT                       |\n");		
-	printf("|                                 |\n");	
-	printf("+---------------------------------+\n");
+	printf("                        |\n");
+	printf("                    .   |\n");
+	printf("                        |\n");
+	printf("          \\    *        |     *    .  /\n");
+	printf("            \\        *  |  .        /\n");
+	printf("         .    \\     ___---___     /    .\n");
+	printf("                \\.--         --./\n");
+	printf("     ~-_    *  ./               \\.   *   _-~\n");
+	printf("        ~-_   /                   \\   _-~     *\n");
+	printf("   *       ~-/                     \\-~\n");
+	printf("     .      |                       |      .\n");
+	printf("         * |                         | *\n");
+	printf("+-----------------------------------------------+\n");
+	printf("|         SOLAR ENERGY INFORMATION SYSTEM       |\n");
+	printf("|-----------------------------------------------|\n");
+	printf("|                                               |\n");
+	printf("| 1. ADD HOUSEHOLD                              |\n");
+	printf("| 2. EDIT HOUSEHOLD RECORD                      |\n");
+	printf("| 3. DELETE HOUSEHOLD RECORD                    |\n");
+	printf("| 4. VIEW RECORDS                               |\n");
+	printf("| 5. VIEW SUMMARY                               |\n");
+	printf("|                                               |\n");
+	printf("| 0. LOGOUT                                     |\n");		
+	printf("|                                               |\n");	
+	printf("+-----------------------------------------------+\n");
 	printf ("-> ");
 	scanf(" %c", &select);
 	
@@ -832,17 +844,29 @@ int main()
 	
 	do
 	{
-		printf("+---------------------------------+\n");
-		printf("| SOLAR ENERGY INFORMATION SYSTEM |\n");
-		printf("+---------------------------------+\n");
-		printf("|                                 |\n");
-		printf("| 1. LOGIN                        |\n");
-		printf("| 2. REGISTER                     |\n");
-		printf("| 3. PASSWORD RECOVERY            |\n");
-		printf("|                                 |\n");
-		printf("| 0. EXIT PROGRAM                 |\n");		
-		printf("|                                 |\n");	
-		printf("+---------------------------------+\n");
+		printf("                        |\n");
+	    printf("                    .   |\n");
+	    printf("                        |\n");
+	    printf("          \\    *        |     *    .  /\n");
+	    printf("            \\        *  |  .        /\n");
+	    printf("         .    \\     ___---___     /    .\n");
+	    printf("                \\.--         --./\n");
+	    printf("     ~-_    *  ./               \\.   *   _-~\n");
+	    printf("        ~-_   /                   \\   _-~     *\n");
+	    printf("   *       ~-/                     \\-~\n");
+	    printf("     .      |                       |      .\n");
+	    printf("         * |                         | *\n");
+	    printf("+-----------------------------------------------+\n");
+		printf("|         SOLAR ENERGY INFORMATION SYSTEM       |\n");
+		printf("|-----------------------------------------------|\n");
+		printf("|                                               |\n");
+		printf("| 1. LOGIN                                      |\n");
+		printf("| 2. REGISTER                                   |\n");
+		printf("| 3. PASSWORD RECOVERY                          |\n");
+		printf("|                                               |\n");
+		printf("| 0. EXIT PROGRAM                               |\n");		
+		printf("|                                               |\n");	
+		printf("+-----------------------------------------------+\n");
 		printf("-> ");
 		scanf(" %c", &loginSelect);
 
