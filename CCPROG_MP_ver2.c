@@ -514,7 +514,7 @@ void deleteHousehold(User users[], int userCount, Record households[][MAX_HH], i
 			do
 			{
 				printf("-> ");
-				scanf("%c", &confirm);
+				scanf(" %c", &confirm);
 				if((confirm == 'Y')||(confirm == 'y'))
 				{
 					
@@ -538,7 +538,7 @@ void deleteHousehold(User users[], int userCount, Record households[][MAX_HH], i
 				}
 				else
 				{
-					printf("--- INVALID SELECTION ---");
+					printf("\n--- INVALID SELECTION ---\n");
 				}
 			}while((confirm!='Y')&&(confirm!='y')&&(confirm!='N')&&(confirm!='n')); //loops until the user confirms whether to delete or not
 		}		
