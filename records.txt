@@ -9,4 +9,7 @@ YANNA LASALLE_DORM 6000.00 200.00 20.00
 YANNA STANFORD_DORM 23000.00 890.00 50.00
 animolasalle newdapatyan 9000.00 500.00 900.00
 animolasalle warehouse 20000.00 450.00 220.00
-nathan_house house1 90000.00 450.00 100.00
+mangosteen house1 90000.00 450.00 100.00
+user1 anotherhouse 5000.00 500.00 100.00
+user1 mico'shouse 4000.00 800.00 50.00
+user1 newhouse 10000.00 500.00 500.00

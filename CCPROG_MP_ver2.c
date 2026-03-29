@@ -807,7 +807,7 @@ void viewSummary(User users[], int userCount, Record households[][MAX_HH], int h
 				    bestSave = polySave;
 				    bestInstall = polyInstall;
 				}	
-				else if(thinInstall < bestInstall) // checks if thin film is better than previous
+				if(thinInstall < bestInstall) // checks if thin film is better than previous
 				{
 				    strcpy(bestPanel, "THIN-FILM");
 				    bestSave = thinSave;
