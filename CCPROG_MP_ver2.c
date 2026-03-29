@@ -1,4 +1,31 @@
 // MANGAHAS && CARTAGO - CCPROG2 MP - SOLAR ENERGY INFORMATION SYSTEM! - VERSION 2
+
+/*
+
+This is to certify that this project is my own work, based on my personal
+efforts in studying and applying the concepts learned. I have constructed the
+functions and their respective algorithms and corresponding code by myself. The
+program was run, tested, and debugged by my own efforts. I further certify that
+I have not copied in part or whole or otherwise plagiarized the work of other
+students and/or persons, nor did I employ the use of AI in any part of the
+deliverable.
+
+Members:
+CARTAGO, Aki Nicole - ID: 12547298
+MANGAHAS, Paul Nathan - ID: 12506974
+
+Section: S19A
+
+PROJECT TITLE: SOLAR ENERGY INFORMATION SYSTEM
+SDG Integration: SDG 7 - Affordable and Clean Energy
+
+PROGRAM DESCRIPTION:
+This is a menu-driven C program that helps users understand their household electricity usage and 
+evaluate whether switching to solar energy is practical and cost-effective for them. With the collected 
+data from the user, such as electricity bills and power consumption, the system will analyze the data, 
+recommend suitable solar panel options and costs, and calculate the estimated electricity savings.
+
+*/
 #include <stdio.h>
 #include <string.h>
 
