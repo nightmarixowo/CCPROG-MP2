@@ -8,13 +8,17 @@
 #define MAX_HH 5 //max household
 
 /* DATA STRUCTURES AND STRING TYPEDEF */
+
+/* typedef: string variable wtih a max length of 30 characters */
 typedef char String[MAX_STR];
 
+/* structure: for user info */
 typedef struct {
     String username;
     String password;
 } User;
 
+/* structure: for household record info */
 typedef struct {
 	
 	String user;
@@ -28,7 +32,11 @@ typedef struct {
 
 /* HELPER FUNCTIONS */
 
-/* simple xor encryption/decryption*/
+/* ENCRYPTION FUNCTION
+	- This function uses a simple xor operator to each character of a string
+	@param password : the string that will be encrypted
+	@return : none
+*/
 void encryptPassword(String password) //done
 {
 
@@ -39,7 +47,12 @@ void encryptPassword(String password) //done
 	}
 }
 
-/* pause and clear screen - i didn't want to type it in everytime */
+/* PAUSE SCREEN
+	- This function pauses the program and waits for user input
+	- This will prompt the user to press Enter before proceeding, and prints a separator
+	@param : none
+	@return : none
+*/
 void pauseScreen() //done
 {
 	
@@ -53,7 +66,13 @@ void pauseScreen() //done
 	printf("\n=================================================\n\n"); //border to separate
 }
 
-/* search username function - linear search*/
+/* SEARCH USER FUNCTION
+	- This function uses linear search to find the index of a user inside a user array
+	@param users : array of user structures
+	@param userCount : number of existing users
+	@param currentUser : username to search
+	@return userIndex: returns the index of the found user in the array, if not found return -1
+*/
 int searchUser(User users[], int userCount, String currentUser) //done
 {
 	
@@ -71,7 +90,12 @@ int searchUser(User users[], int userCount, String currentUser) //done
 	return index; //returns index of found user, and -1 if unsuccessful
 }
 
-/* sort users - selection sort */
+/* SORT USER FUNCTION
+	- This function uses selection sort, arranging the usernames alphabetically
+	@param users : array of user structures
+	@param userCount : number of existing users
+	@return : none
+*/
 void sortUsers(User users[], int userCount) //done - i dont know if we need this? linear search naman kse
 {
 	int i, j, minIndex;
@@ -95,7 +119,13 @@ void sortUsers(User users[], int userCount) //done - i dont know if we need this
     }	
 }
 
-/* sort household function - selection sort*/
+/* SEARCH HOUSEHOLD FUNCTION
+	- This function uses selection sort, arranging the household names of a specific user alphabetically
+	@param households : 2D array of household records
+	@param householdCount: array for the number of households per user
+	@param currentUser : username to search
+	@return : none
+*/
 void sortHouseholds(Record households[][MAX_HH], int householdCount[], int userIndex) //done
 {
     int i, j, minIndex;
@@ -120,6 +150,12 @@ void sortHouseholds(Record households[][MAX_HH], int householdCount[], int userI
 }
 
 /* FILE HANDLING FUNCTIONS */
+
+/* LOAD USERS FUNCTION
+	- This function reads the usernames and passwords from "users.txt" into the users array
+	@param users : array to store loaded users
+	@return count : number of existing users from the file
+*/
 int loadUsers(User users[]) //done
 {
 	int count = 0;
@@ -143,6 +179,12 @@ int loadUsers(User users[]) //done
 	return count; //returns number of existing users in the file
 }
 
+/* SAVE USERS FUNCTION
+	- This function saves user data onto the "users.txt" file
+	@param users : array of user structures
+	@param userCount: number of users
+	@return : none
+*/
 void saveUsers(User users[], int userCount)
 {
 	FILE *fp;
@@ -157,6 +199,14 @@ void saveUsers(User users[], int userCount)
 	fclose(fp);
 }
 
+/* LOAD HOUSEHOLDS FUNCTION
+	- This function reads the data from the "records.txt" file and assigns them to their corresponding users
+	@param users : array of user structures
+	@param userCount: number of users
+	@param households : 2D array of household records
+	@param hosueholdCount: array for the number of households per user
+	@return : none
+*/
 void loadHouseholds(User users[], int userCount, Record households[][MAX_HH], int householdCount[])
 {
 	
@@ -188,6 +238,14 @@ void loadHouseholds(User users[], int userCount, Record households[][MAX_HH], in
 	
 }
 
+/* SAVE HOUSEHOLDS FUNCTION
+	- This function saves the household data onto the "records.txt" file
+	@param users : array of user structures
+	@param userCount: number of users
+	@param households : 2D array of household records
+	@param hosueholdCount: array for the number of households per user
+	@return : none
+*/
 void saveHouseholds(User users[], int userCount, Record households[][MAX_HH], int householdCount[])
 {
 	FILE *fp;
@@ -215,6 +273,12 @@ void saveHouseholds(User users[], int userCount, Record households[][MAX_HH], in
 
 /* DATA FUNCTIONS - LOGIN SCREEN */
 
+/* USER REGISTRATION
+	- This function registers a new user. It prompts for a username and password, encrypts the password, and saves the user onto the array
+	@param users : array of user structures
+	@param *usercount : pointer to number of users
+	@return result : 1 if successful, 0 if the user already exists
+*/
 int registerUser(User users[], int * userCount)
 {
 	User u;
@@ -265,6 +329,13 @@ int registerUser(User users[], int * userCount)
 	
 }
 
+/* USER LOGIN
+	- This function logs-in a user. It prompts for a username and password and verifies if crendentials are valid
+	@param users : array of user structures
+	@param *usercount : pointer to number of users
+	@param currentUser : stores the logged in username
+	@return result : 1 if successful, 0 if the user already exists
+*/
 int loginUser(User users[], int userCount, String currentUser)
 {
 	User u; //for user input (username & password)
@@ -320,6 +391,12 @@ int loginUser(User users[], int userCount, String currentUser)
 	return result;	
 }
 
+/* PASSWORD RECOVERY
+	- This function changes a user's password, prompts for username and a new password then updates the password of that user
+	@param users : array of user structures
+	@param usercount : number of users
+	@return : none
+*/
 void passwordRecovery(User users[], int userCount)
 {
 	
@@ -356,6 +433,15 @@ void passwordRecovery(User users[], int userCount)
 
 /* DATA FUNCTIONS AND COMPUTATIONS - HOME PAGE */
 
+/* ADD HOUSEHOLD RECORD
+	- This function adds a new household, prompts for the different household data and stores that record under the logged-in user
+	@param users : array of user structures
+	@param usercount : number of users
+	@param households : 2D array of household records
+	@param hosueholdCount: array for the number of households per user
+	@param currentUser : logged-in user
+	@return : none
+*/
 void addHousehold(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
 	
@@ -403,6 +489,15 @@ void addHousehold(User users[], int userCount, Record households[][MAX_HH], int 
 	
 }
 
+/* EDIT HOUSEHOLD RECORD
+	- This function edits 
+	@param users : array of user structures
+	@param usercount : number of users
+	@param households : 2D array of household records
+	@param hosueholdCount: array for the number of households per user
+	@param currentUser : logged-in user
+	@return : none
+*/
 void editHousehold(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
 	
@@ -422,7 +517,7 @@ void editHousehold(User users[], int userCount, Record households[][MAX_HH], int
 		printf("+---------------------------------+\n");
 		printf("| EDIT HOUSEHOLD                  |\n");
 		printf("+---------------------------------+\n");
-		printf("--- SELECT HOUSEHOLD TO EDIT ---\n");
+		printf("--- SELECT HOUSEHOLD NUMBER TO EDIT ---\n");
 		
 		for(int i = 0; i < householdCount[userIndex]; i++)
 		{
@@ -470,6 +565,15 @@ void editHousehold(User users[], int userCount, Record households[][MAX_HH], int
 	}
 }
 
+/* DELETE HOUSEHOLD RECORD
+	- This function deletes a household record of the logged in user, prompts to select which household to delete and confirmation
+	@param users : array of user structures
+	@param usercount : number of users
+	@param households : 2D array of household records
+	@param hosueholdCount: array for the number of households per user
+	@param currentUser : logged-in user
+	@return : none
+*/
 void deleteHousehold(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
 	int select;
@@ -488,7 +592,7 @@ void deleteHousehold(User users[], int userCount, Record households[][MAX_HH], i
 		printf("+---------------------------------+\n");
 		printf("| DELETE HOUSEHOLD                  |\n");
 		printf("+---------------------------------+\n");
-		printf("--- SELECT HOUSEHOLD TO DELETE ---\n");
+		printf("--- SELECT HOUSEHOLD NUMBER TO DELETE ---\n");
 		
 		for(int i = 0; i < householdCount[userIndex]; i++)
 		{
@@ -546,6 +650,15 @@ void deleteHousehold(User users[], int userCount, Record households[][MAX_HH], i
 	}	
 }
 
+/* VIEW RECORD
+	- This function prints all household records of a specific user
+	@param users : array of user structures
+	@param usercount : number of users
+	@param households : 2D array of household records
+	@param hosueholdCount: array for the number of households per user
+	@param currentUser : logged-in user
+	@return : none
+*/
 void viewRecords(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
 	Record r;
@@ -579,7 +692,17 @@ void viewRecords(User users[], int userCount, Record households[][MAX_HH], int h
 	}
 }
 
-/* computes and shows summary of households */
+/* COMPUTATION / SUMMARY
+	- This function calculates the estimated savings, costs of installation, energy output, and ROI on each for each household
+	- It will reccomend a panel type best for energy output and another for savings
+	- It will display the summary for all 3 panel types after the reccomendation
+	@param users : array of user structures
+	@param usercount : number of users
+	@param households : 2D array of household records
+	@param hosueholdCount: array for the number of households per user
+	@param currentUser : logged-in user
+	@return : none
+*/
 void viewSummary(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
 	
@@ -739,7 +862,16 @@ void viewSummary(User users[], int userCount, Record households[][MAX_HH], int h
 	
 	
 
-
+/* LOGIN UI
+	- This function dispalys the user interface after a sucessful login.
+	- The user can select a number to perform the corresponding function
+	@param users : array of user structures
+	@param usercount : number of users
+	@param households : 2D array of household records
+	@param hosueholdCount: array for the number of households per user
+	@param currentUser : logged-in user
+	@return : none
+*/
 void loggedinUI(User users[], int userCount, Record households[][MAX_HH], int householdCount[], String currentUser)
 {
 
@@ -826,6 +958,13 @@ void loggedinUI(User users[], int userCount, Record households[][MAX_HH], int ho
 	while(select != '0');
 	
 }
+
+/* MAIN 
+	- initializes data, loads files, and displays the log-in UI
+	@param : none
+	@return 0 : Terminate Program
+
+*/
 
 int main()
 {
